@@ -1,0 +1,28 @@
+version: "3"
+volumes:
+  pg_data:
+services:
+  api:
+    build:
+      context: api
+    hostname: api
+    restart: unless-stopped
+    entrypoint: sh -c '/app/entrypoint.sh'
+    volumes:
+      - ./api/app:/app
+      - ./templates:/templates
+      - ./data:/data
+    env_file: .env
+    environment:
+      - GIT_VERSION=${GIT_VERSION}
+      - GIT_BRANCH=${GIT_BRANCH}
+      - GIT_LASTCOMMITDATE=${GIT_LASTCOMMITDATE}
+    depends_on:
+      - db
+  db:
+    image: postgres:15-bookworm
+    hostname: db
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data

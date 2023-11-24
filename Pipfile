@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+genshi = "==0.7.*"
+lxml = "<=5.0.0,>=4.9.3"
+pandas = "<=3.0.0,>=2.0.3"
+pyyaml = "==5.*"
+requests = "<=3.0.0,>=2.31.0"
+openpyxl = "<=4.0.0,>=3.1.2"
+
+[dev-packages]
+
+[requires]
+python_version = "3.7"

@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  api:
+    environment:
+      - DJANGO_DEBUG=True
+      - DJANGO_LOG_LEVEL=DEBUG
+    ports:
+      - "5042:5000"
+  db:
+    ports:
+      - "54342:5432"

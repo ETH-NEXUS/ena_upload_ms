@@ -1,0 +1,60 @@
+{
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.formatOnSave": true,
+  // "editor.formatOnSaveMode": "modifications",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": ["source.fixAll.eslint"],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports.ruff": true
+      // "source.organizeImports": "explicit"
+    }
+  },
+  "python.testing.pytestArgs": ["api/app"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "python.terminal.activateEnvironment": false,
+  "python.defaultInterpreterPath": "/Users/davmeyer/.local/share/virtualenvs/ena-upload-ng-KXsU5_aj/bin/python",
+  // "python.linting.enabled": true,
+  // "python.linting.lintOnSave": true,
+  // "python.linting.pycodestyleEnabled": false,
+  // "python.linting.flake8Enabled": true,
+  // "python.formatting.provider": "none",
+  "flake8.lintOnChange": true,
+  "isort.path": [
+    "/Users/davmeyer/.local/share/virtualenvs/ena-upload-ng-KXsU5_aj/bin/isort"
+  ],
+  "cSpell.words": [
+    "analysisjob",
+    "analysisjobs",
+    "barcodes",
+    "compoundlib",
+    "compoundlibraries",
+    "compoundlibs",
+    "corsheaders",
+    "dagre",
+    "dataframe",
+    "dataframes",
+    "dropna",
+    "heatplate",
+    "IDNUMBER",
+    "infoblocks",
+    "isna",
+    "jupyntf",
+    "mbar",
+    "notna",
+    "platemappings",
+    "platetemplate",
+    "quotechar",
+    "rdchem",
+    "templatecategories",
+    "webin",
+    "wellcompounds",
+    "wellwithdrawals"
+  ]
+}

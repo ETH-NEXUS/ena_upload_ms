@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="receipt.xsl"?>
+<RECEIPT receiptDate="2023-11-10T14:50:20.995Z" submissionFile="/var/folders/1r/365s5d3d4d954cwn4gm_1s_r0000gq/T/submission_e4b3c609-e661-4e3e-a8e9-ca6281c9a90d.xml" success="true">
+     <EXPERIMENT accession="ERX11667202" alias="revseq_experiment_3" status="PRIVATE"/>
+     <RUN accession="ERR12256306" alias="revseq_run_3" status="PRIVATE"/>
+     <SAMPLE accession="ERS27604934" alias="revseq_sample_3" status="PRIVATE" holdUntilDate="2025-11-10Z">
+          <EXT_ID accession="SAMEA130793684" type="biosample"/>
+     </SAMPLE>
+     <SUBMISSION accession="ERA27378751" alias="SUBMISSION-10-11-2023-14:50:20:592"/>
+     <MESSAGES>
+          <INFO>All objects in this submission are set to private status (HOLD).</INFO>
+          <INFO>This submission is a TEST submission and will be discarded within 24 hours</INFO>
+     </MESSAGES>
+     <ACTIONS>ADD</ACTIONS>
+     <ACTIONS>ADD</ACTIONS>
+     <ACTIONS>ADD</ACTIONS>
+     <ACTIONS>HOLD</ACTIONS>
+</RECEIPT>

@@ -1,0 +1,43 @@
+{
+    "action": "ADD",
+    "template": "revseq",
+    "data": {},
+    "ignore": ["study", "sample"],
+    "files": ["/data/example2.cram"]
+}
+
+{
+    "action": "ADD",
+    "template": "revseq",
+    "data": {"study": {"alias":"revseq_5"}},
+    "ignore": [],
+    "files": []
+}
+
+{
+    "action": "ADD",
+    "template": "revseq",
+    "data": {},
+    "ignore": [],
+    "files": ["/data/example2.cram"]
+}
+
+{
+    "action": "RELEASE",
+    "template": "revseq",
+    "data": {},
+    "ignore": [],
+    "files": ["/data/example8.cram"]
+}
+
+{
+    "action": "ADD",
+    "template": "revseq",
+    "data": {},
+    "ignore": [],
+    "files": ["/data/example2.cram"]
+}
+
+{
+    "data": {"sample":{"host subject id":"dave"}}
+}
