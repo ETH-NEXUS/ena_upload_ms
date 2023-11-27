@@ -221,7 +221,7 @@ LOGGING = {
         },
     },
     "handlers": {
-        "console": {"class": "logging.StreamHandler", "formatter": "verbose"},
+        "console": {"class": "logging.StreamHandler", "formatter": "simple"},
     },
     "root": {
         "level": LOG_LEVEL,
