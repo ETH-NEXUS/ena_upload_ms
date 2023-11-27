@@ -1,0 +1,58 @@
+checklist: ERC000033
+center_name: My Center
+laboratory: My Laboratory
+
+# Overall ENA research project
+study:
+  alias: my_study_alias
+  title: My Study Title
+  study_type: studyType
+  study_abstract: My Study Abstract
+  pubmed_id: pubmedId (if available)
+
+# Sequenced Biomaterial
+sample:
+  alias: my_sample_{}
+  title: My Sample Title
+  taxon_id: The Taxon ID
+  sample_description: My Sample Description
+  host subject id: 0000001
+  collection date: 2023-11-27
+  geographic location (country and/or sea): Switzerland
+  host common name: Human
+  host health state: "missing: human-identifiable"
+  host sex: "missing: human-identifiable"
+  host scientific name: Homo Sapiens
+  collector name: ""
+  collecting institution: Collecting institution
+  isolate: ""
+
+# Raw Reads
+experiment:
+  alias: my_experiment_{}
+  title: My Experiment
+  study_alias: my_study_alias
+  sample_alias: my_sample_{}
+  design_description: "None"
+  library_name: "None"
+  library_strategy: RNA-Seq
+  library_source: METAGENOMIC
+  library_selection: cDNA
+  library_layout: "paired"
+  insert_size: 250
+  library_construction_protocol: "None"
+  platform: illumina
+  instrument_model: Illumina MiSeq
+
+# Files
+run:
+  alias: my_run_{}
+  experiment_alias: my_experiment_{}
+
+# Data Analysis
+analysis:
+  name: my_analysis_{}
+  assembly_type: clone
+  coverage: <float with the coverage>
+  program: TODO
+  platform: TODO
