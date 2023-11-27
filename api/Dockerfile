@@ -22,5 +22,16 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
+# Set the git information
+ENV GIT_VERSION=${GIT_VERSION}
+ENV GIT_BRANCH=${GIT_BRANCH}
+ENV GIT_LASTCOMMITDATE=${GIT_LASTCOMMITDATE}
+
+# Copy the app to the image
+COPY ./app /app
+
 # Set working directory
 WORKDIR /app
+
+# Set the entrypoint
+ENTRYPOINT [ "/app/entrypoint.sh" ]

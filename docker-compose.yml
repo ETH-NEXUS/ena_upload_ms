@@ -7,16 +7,11 @@ services:
       context: api
     hostname: api
     restart: unless-stopped
-    entrypoint: sh -c '/app/entrypoint.sh'
     volumes:
       - ./api/app:/app
       - ./templates:/templates
       - ./data:/data
     env_file: .env
-    environment:
-      - GIT_VERSION=${GIT_VERSION}
-      - GIT_BRANCH=${GIT_BRANCH}
-      - GIT_LASTCOMMITDATE=${GIT_LASTCOMMITDATE}
     depends_on:
       - db
   db:
