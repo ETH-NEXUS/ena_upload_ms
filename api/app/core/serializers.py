@@ -50,6 +50,7 @@ class JobSerializer(serializers.ModelSerializer):
             "id",
             "created_at",
             "status",
+            "action",
             "submission",
             "raw_submission",
             "result",

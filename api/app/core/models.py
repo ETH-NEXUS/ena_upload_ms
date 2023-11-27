@@ -25,12 +25,13 @@ class Job(models.Model):
             ("MODIFY", "MODIFY"),
             ("CANCEL", "CANCEL"),
             ("RELEASE", "RELEASE"),
-        )
+        ),
+        default="ADD",
     )
     template = models.CharField(
         max_length=50, default="default", null=False, blank=True
     )
-    data = models.JSONField(null=False)
+    data = models.JSONField(null=False, default=dict)
     ignore = ArrayField(
         models.CharField(
             max_length=10,
@@ -127,16 +128,17 @@ class AnalysisJob(models.Model):
     status = models.CharField(
         max_length=20,
         choices=(
+            ("DRAFT", "DRAFT"),
             ("QUEUED", "QUEUED"),
             ("SUBMITTED", "SUBMITTED"),
             ("ERROR", "ERROR"),
         ),
-        default="QUEUED",
+        default="DRAFT",
     )
     template = models.CharField(
         max_length=50, default="default", null=False, blank=True
     )
-    data = models.JSONField(null=False)
+    data = models.JSONField(null=False, default=dict)
     result = models.JSONField(null=True, blank=True)
     raw_result = models.TextField(null=True, blank=True)
 
