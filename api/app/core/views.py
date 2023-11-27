@@ -1,12 +1,14 @@
 import threading
 import time
 import yaml
+from datetime import datetime as dt
 from os.path import join, isfile
 from rest_framework import status, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, APIException
 from django.conf import settings
+from django.utils import timezone as tz
 from core import log
 from .serializers import (
     JobSerializer,
@@ -136,6 +138,20 @@ class JobViewset(
         """sample, experiment, run"""
         return self.__perform_create_with_ignore(request, ["study"])
 
+    @action(detail=True, methods=["get"])
+    def enqueue(self, request, pk=None):
+        job = Job.objects.get(pk=pk)
+        if job.status != "SUBMITTED":
+            job.status = "QUEUED"
+            job.save()
+            serializer = JobSerializer(instance=job, context={"request": request})
+            return Response(serializer.data)
+        else:
+            return Response(
+                "Requeue not allowed on successfully submitted jobs.",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
     ###
     # SPECIAL ACTIONS FOR JOBS
     ###
@@ -191,6 +207,10 @@ class AnalysisJobViewset(
                 template = yaml.load(tf, Loader=yaml.BaseLoader)
                 if "analysis" in template:
                     job.data = merge(template["analysis"], job.data)
+                # Replace {} in the name with the timestamp
+                ts = dt.strftime(tz.now(), "%Y%m%d%H%M%S%f")
+                if "name" in job.data:
+                    job.data["name"] = job.data["name"].replace("{}", ts)
             job.save()
             return job
         else:
@@ -203,7 +223,7 @@ class AnalysisJobViewset(
             raise DeleteNotAllowed()
 
     @action(detail=True, methods=["get"])
-    def requeue(self, request, pk=None):
+    def enqueue(self, request, pk=None):
         job = AnalysisJob.objects.get(pk=pk)
         if job.status != "SUBMITTED":
             job.status = "QUEUED"
