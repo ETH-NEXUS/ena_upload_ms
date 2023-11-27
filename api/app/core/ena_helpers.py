@@ -26,28 +26,35 @@ STATUS_CHANGES = {
 
 
 def apply_template(job: Job):
-    if job.template:
-        template_file = join(settings.TEMPLATE_DIR, f"{job.template}.yml")
-        log.debug(f"Template file: {template_file}")
-        if isfile(template_file):
-            log.debug("Template file found.")
-            with open(template_file, "r") as cf:
-                # We use BaseLoader to handle all values as string
-                template = yaml.load(cf, Loader=yaml.BaseLoader)
-                # Remove the ignored parts
-                for ignore in job.ignore:
-                    if ignore in template:
-                        del template[ignore]
-                # now merge the data
-                new_data = merge(template, job.data)
-                # Replace all {} in the alias values with the timestamp
-                ts = dt.strftime(tz.now(), "%Y%m%d%H%M%S%f")
-                for schema in SCHEMAS:
-                    if schema in new_data:
-                        for key, value in new_data[schema].items():
-                            if key.endswith("alias"):
-                                new_data[schema][key] = value.replace("{}", ts)
-                job.data = new_data
+    if not job.template:
+        job.template = "default"
+
+    template_file = join(settings.TEMPLATE_DIR, f"{job.template}.yml")
+    log.debug(f"Template file: {template_file}")
+    if isfile(template_file):
+        log.debug("Template file found.")
+        with open(template_file, "r") as cf:
+            # We use BaseLoader to handle all values as string
+            template = yaml.load(cf, Loader=yaml.BaseLoader)
+            # Remove the ignored parts
+            for ignore in job.ignore:
+                if ignore in template:
+                    del template[ignore]
+            # now merge the data
+            new_data = merge(template, job.data)
+            # Replace all {} in the alias values with the timestamp
+            ts = dt.strftime(tz.now(), "%Y%m%d%H%M%S%f")
+            for schema in SCHEMAS:
+                if schema in new_data:
+                    for key, value in new_data[schema].items():
+                        if key.endswith("alias"):
+                            new_data[schema][key] = value.replace("{}", ts)
+            # remove all sections that are not in the extended schema list
+            for key in set(new_data.keys()).difference(
+                set(SCHEMAS + ["center_name", "laboratory", "checklist"])
+            ):
+                del new_data[key]
+            job.data = new_data
     else:
         log.warning(f"Template file not found: {template_file}")
         # Template not found
