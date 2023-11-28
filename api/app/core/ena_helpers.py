@@ -192,7 +192,7 @@ def ena_upload(job: Job):
         raise ValidationError(f"The action {job.action} is not supported.")
 
     job.submission = {
-        schema: json.loads(target.to_json(orient="records"))
+        schema: json.loads(target.to_json(orient="records"))[0]
         for schema, target in schema_targets.items()
     }
     with open(submission_xml, "r") as sf:
@@ -216,7 +216,7 @@ def ena_upload(job: Job):
             schema_dataframe, schema_targets, job.action
         )
     job.result = {
-        schema: json.loads(dataframe.to_json(orient="records"))
+        schema: json.loads(dataframe.to_json(orient="records"))[0]
         for schema, dataframe in schema_dataframe.items()
     }
     job.status = "SUBMITTED"

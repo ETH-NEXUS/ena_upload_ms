@@ -63,16 +63,16 @@ class Job(models.Model):
         if not self.result:
             return {}
         return {
-            "experiment": f"{settings.ENA_BROWSER_URL}/{self.result['experiment'][0]['accession']}"
+            "experiment": f"{settings.ENA_BROWSER_URL}/{self.result['experiment']['accession']}"
             if "experiment" in self.result
             else "",
-            "sample": f"{settings.ENA_BROWSER_URL}/{self.result['sample'][0]['accession']}"
+            "sample": f"{settings.ENA_BROWSER_URL}/{self.result['sample']['accession']}"
             if "sample" in self.result
             else "",
-            "run": f"{settings.ENA_BROWSER_URL}/{self.result['run'][0]['accession']}"
+            "run": f"{settings.ENA_BROWSER_URL}/{self.result['run']['accession']}"
             if "run" in self.result
             else "",
-            "study": f"{settings.ENA_BROWSER_URL}/{self.result['study'][0]['accession']}"
+            "study": f"{settings.ENA_BROWSER_URL}/{self.result['study']['accession']}"
             if "study" in self.result
             else "",
         }
@@ -88,6 +88,7 @@ class Job(models.Model):
         user: get_user_model(),
         new_action: str,
         new_status: str = "QUEUED",
+        filter_none_accession: bool = False,
     ):
         new_job = copy(self)
         new_job.pk = None
@@ -96,11 +97,21 @@ class Job(models.Model):
         # can be moved to model
         new_job.action = new_action
         new_job.status = new_status
-        result = {}
-        for key in new_job.result.keys():
-            new_job.result[key][0]["status"] = new_action
-            result[key] = new_job.result[key][0]
-        new_job.data = merge(new_job.data, result)
+        if new_job.result:
+            for key in new_job.result.keys():
+                new_job.result[key]["status"] = new_action
+        new_job.data = merge(new_job.data, new_job.result)
+        # filter out keys without accession
+        if filter_none_accession:
+            keys_to_delete = []
+            for key in new_job.data.keys():
+                if (
+                    "accession" in new_job.data[key]
+                    and new_job.data[key]["accession"] is None
+                ):
+                    keys_to_delete.append(key)
+            for key in keys_to_delete:
+                del new_job.data[key]
         new_job.result = None
         new_job.raw_result = None
         new_job.submission = None
@@ -144,9 +155,9 @@ class AnalysisJob(models.Model):
 
     @property
     def manifest(self):
-        manifest_text = f"""STUDY {self.job.result['experiment'][0]['study_alias']}
-SAMPLE {self.job.result['experiment'][0]['sample_alias']}
-RUN_REF {self.job.result['run'][0]['accession']}
+        manifest_text = f"""STUDY {self.job.result['experiment']['study_alias']}
+SAMPLE {self.job.result['experiment']['sample_alias']}
+RUN_REF {self.job.result['run']['accession']}
 """
         for key, value in self.data.items():
             manifest_text += f"{key.upper()} {value}\n"
