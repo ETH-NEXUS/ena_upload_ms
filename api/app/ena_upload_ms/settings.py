@@ -93,11 +93,11 @@ WSGI_APPLICATION = "ena_upload_ms.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "HOST": environ.get("POSTGRES_HOST"),
-        "PORT": environ.get("POSTGRES_PORT"),
-        "NAME": environ.get("POSTGRES_DB"),
-        "USER": environ.get("POSTGRES_USER"),
-        "PASSWORD": environ.get("POSTGRES_PASSWORD"),
+        "HOST": environ.get("ENA_POSTGRES_HOST"),
+        "PORT": environ.get("ENA_POSTGRES_PORT"),
+        "NAME": environ.get("ENA_POSTGRES_DB"),
+        "USER": environ.get("ENA_POSTGRES_USER"),
+        "PASSWORD": environ.get("ENA_POSTGRES_PASSWORD"),
     }
 }
 
