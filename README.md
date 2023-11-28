@@ -81,7 +81,10 @@ The `{}` will be replace with a timestamp of nanoseconds accuracy (`strftime("%Y
 1. Upload the study (this is needed only once): `/jobs/study/`
 2. Upload Sample-Experiment-Run-Tripple: `/jobs/ser/`
 3. Upload an Analysis: `/analysisjobs/`
-4. Attach files to this job `/analysisfiles/`
+4. Attach files to the analysis job `/analysisfiles/`
+5. Enqueue the analysis job
+6. Release the job `/jobs/<job_id>/release`
+7. Release the analysisjob `/analysisjobs/<job_id>/release`
 
 ## Installation
 
@@ -110,4 +113,94 @@ services:
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
+```
+
+In the `.env` you need to configure the following values:
+
+```bash
+ENA_POSTGRES_HOST=db
+ENA_POSTGRES_PORT=5432
+ENA_POSTGRES_DB=ena
+ENA_POSTGRES_USER=ena
+ENA_POSTGRES_PASSWORD=b29a10670294502048c9
+
+ENA_USERNAME=Webin-xxxxx
+ENA_PASSWORD=xxxxxxxxxxx
+ENA_USE_DEV_ENDPOINT=True
+ENA_UPLOAD_FREQ_SECS=5
+```
+
+## Usage
+
+### Submit a study
+
+```bash
+curl 'https://domain.com/api/jobs/study/' \
+-H 'Authorization: token xxxxxxxxxxxxxx' \
+-H 'Content-Type: application/json' \
+-d '{
+    "template": "default",
+    "data": {}
+}' \
+
+```
+
+### Submit a Sample-Experiment-Run
+
+```bash
+curl 'http://domain.com/api/jobs/ser/' \
+-H 'Authorization: token xxxxxxxxxxxxxx' \
+-H 'Content-Type: application/json' \
+-d '{
+    "template": "default",
+    "data": {"sample": {"host subject id": "xy1234"}},
+    "files": ["/data/example.cram"]
+}'
+```
+
+### Submit an Analysis Job
+
+```bash
+curl 'http://domain.com/api/analysisjobs/' \
+-H 'Authorization: token xxxxxxxxxxxxxx' \
+-H 'Content-Type: application/json' \
+-d '{
+    "job": <job_id>,
+    "template": "default",
+    "data": {}
+}'
+```
+
+### Submit an Analysis File
+
+```bash
+curl 'http://domain.com/api/analysisfiles/' \
+-H 'Authorization: token xxxxxxxxxxxxxx' \
+-H 'Content-Type: application/json' \
+-d '{
+    "job": <analysis_job_id>,
+    "file_name": "/data/example.fa.gz",
+    "file_type": FASTA
+}'
+```
+
+### Enqueue an Analysis Job
+
+```bash
+curl 'http://domain.com/api/analysisjobs/<job_id>/enqueue' \
+-H 'Authorization: token xxxxxxxxxxxxxx'
+```
+
+### Release a Job
+
+```bash
+curl http://domain.com/api/jobs/<job_id>/release/ \
+-H 'Authorization: token xxxxxxxxxxxxxx'
+```
+
+### Release an Analysis Job
+
+```bash
+curl http://domain.com/api/analysisjobs/<job_id>/release/ \
+-H 'Authorization: token xxxxxxxxxxxxxx'
 ```
