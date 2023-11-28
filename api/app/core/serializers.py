@@ -17,11 +17,11 @@ class JobSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedRelatedField(
         read_only=True, view_name="jobs-detail", source="id"
     )
-    parent = serializers.HyperlinkedRelatedField(
-        read_only=True, view_name="jobs-detail"
+    parent_url = serializers.HyperlinkedRelatedField(
+        read_only=True, view_name="jobs-detail", source="parent"
     )
-    children = serializers.HyperlinkedRelatedField(
-        many=True, read_only=True, view_name="jobs-detail"
+    children_url = serializers.HyperlinkedRelatedField(
+        many=True, read_only=True, view_name="jobs-detail", source="children"
     )
     job_files = FileSerializer(many=True, read_only=True)
 
@@ -44,7 +44,9 @@ class JobSerializer(serializers.ModelSerializer):
             "links",
             "job_files",
             "parent",
+            "parent_url",
             "children",
+            "children_url",
         )
         read_only_fields = (
             "id",
