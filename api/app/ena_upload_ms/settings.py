@@ -51,8 +51,8 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "drf_spectacular_sidecar",
     "drf_auto_endpoint",
-    "core",
     "dbbackup",
+    "core",
 ]
 
 MIDDLEWARE = [
