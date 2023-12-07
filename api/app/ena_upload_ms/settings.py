@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "drf_spectacular_sidecar",
     "drf_auto_endpoint",
-    "dbbackup",
     "core",
 ]
 
@@ -93,11 +92,11 @@ WSGI_APPLICATION = "ena_upload_ms.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "HOST": environ.get("ENA_POSTGRES_HOST"),
-        "PORT": environ.get("ENA_POSTGRES_PORT"),
-        "NAME": environ.get("ENA_POSTGRES_DB"),
-        "USER": environ.get("ENA_POSTGRES_USER"),
-        "PASSWORD": environ.get("ENA_POSTGRES_PASSWORD"),
+        "HOST": environ.get("POSTGRES_HOST"),
+        "PORT": environ.get("POSTGRES_PORT"),
+        "NAME": environ.get("POSTGRES_DB"),
+        "USER": environ.get("POSTGRES_USER"),
+        "PASSWORD": environ.get("POSTGRES_PASSWORD"),
     }
 }
 
@@ -242,14 +241,6 @@ if not LOG_SH:
     logging.getLogger("sh.streamwriter").setLevel(logging.WARNING)
     logging.getLogger("sh.streamreader").setLevel(logging.WARNING)
 
-###
-# DB Backup
-###
-
-DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
-DBBACKUP_STORAGE_OPTIONS = {
-    "location": environ.get("DBBACKUP_STORAGE_LOCATION", "/vol/backups/")
-}
 
 ###
 # Documentation
