@@ -10,14 +10,14 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV DJANGO_SETTINGS_MODULE=ena_upload_ms.settings
 
 # Install the webin dependencies
-RUN wget http://www.mirbsd.org/~tg/Debs/sources.txt/wtf-bookworm.sources
-RUN mkdir -p /etc/apt/sources.list.d
-RUN mv wtf-bookworm.sources /etc/apt/sources.list.d/
-RUN apt update && apt install -y openjdk-8-jdk
-# RUN mkdir -p /etc/apt/keyrings
-# RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
-# RUN echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
-# RUN apt update && apt install -y temurin-8-jdk
+# RUN wget http://www.mirbsd.org/~tg/Debs/sources.txt/wtf-bookworm.sources
+# RUN mkdir -p /etc/apt/sources.list.d
+# RUN mv wtf-bookworm.sources /etc/apt/sources.list.d/
+# RUN apt update --fix-missing && apt install -y openjdk-8-jdk
+RUN mkdir -p /etc/apt/keyrings
+RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
+RUN echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
+RUN apt update && apt install -y temurin-8-jdk
 RUN cd /opt && \
     wget https://github.com/enasequence/webin-cli/releases/download/6.7.2/webin-cli-6.7.2.jar && \
     mv webin-cli-6.7.2.jar webin-cli.jar
