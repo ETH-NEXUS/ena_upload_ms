@@ -7,10 +7,11 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 ENV DEBIAN_FRONTEND noninteractive
 
 # Install the webin dependencies
-RUN wget http://www.mirbsd.org/~tg/Debs/sources.txt/wtf-bookworm.sources
-RUN mkdir -p /etc/apt/sources.list.d
-RUN mv wtf-bookworm.sources /etc/apt/sources.list.d/
-RUN apt-get update && apt-get install -y openjdk-8-jdk
+# RUN wget http://www.mirbsd.org/~tg/Debs/sources.txt/wtf-bookworm.sources
+# RUN mkdir -p /etc/apt/sources.list.d
+# RUN mv wtf-bookworm.sources /etc/apt/sources.list.d/
+# RUN apt-get update && apt-get install -y openjdk-8-jdk
+RUN apt-get update && apt-get install -y openjdk-8-source
 RUN cd /opt && \
     wget https://github.com/enasequence/webin-cli/releases/download/6.7.2/webin-cli-6.7.2.jar && \
     mv webin-cli-6.7.2.jar webin-cli.jar
