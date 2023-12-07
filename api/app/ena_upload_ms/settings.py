@@ -92,10 +92,10 @@ WSGI_APPLICATION = "ena_upload_ms.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "HOST": environ.get("POSTGRES_HOST"),
-        "PORT": environ.get("POSTGRES_PORT"),
-        "NAME": environ.get("POSTGRES_DB"),
-        "USER": environ.get("POSTGRES_USER"),
+        "HOST": environ.get("POSTGRES_HOST", "db"),
+        "PORT": environ.get("POSTGRES_PORT", "5432"),
+        "NAME": environ.get("POSTGRES_DB", "ena"),
+        "USER": environ.get("POSTGRES_USER", "ena"),
         "PASSWORD": environ.get("POSTGRES_PASSWORD"),
     }
 }
@@ -181,8 +181,12 @@ FIXTURE_DIRS = []
 ALLOWED_HOSTS = environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 # CORS configuration
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = environ.get("DJANGO_CORS_ALLOWED_ORIGINS", "").split(",")
+CORS_ALLOW_ALL_ORIGINS = False if environ.get("DJANGO_CORS_ALLOWED_ORIGINS") else True
+CORS_ALLOWED_ORIGINS = (
+    environ.get("DJANGO_CORS_ALLOWED_ORIGINS").split(",")
+    if environ.get("DJANGO_CORS_ALLOWED_ORIGINS")
+    else None
+)
 CORS_ALLOW_HEADERS = default_headers + (
     "cache-control",
     "pragma",
@@ -192,7 +196,11 @@ CORS_EXPOSE_HEADERS = ["Content-Type"]
 CORS_ALLOW_CREDENTIALS = True
 
 # CSRF configuration
-CSRF_TRUSTED_ORIGINS = environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+CSRF_TRUSTED_ORIGINS = (
+    environ.get("DJANGO_CSRF_TRUSTED_ORIGINS").split(",")
+    if environ.get("DJANGO_CSRF_TRUSTED_ORIGINS")
+    else None
+)
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = "Strict"
