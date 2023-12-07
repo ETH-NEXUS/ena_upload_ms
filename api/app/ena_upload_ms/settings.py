@@ -178,11 +178,11 @@ FIXTURE_DIRS = []
 ###
 # SECURITY
 ###
-ALLOWED_HOSTS = environ.get("DJANGO_ALLOWED_HOSTS").split(",")
+ALLOWED_HOSTS = environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 # CORS configuration
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = environ.get("DJANGO_CORS_ALLOWED_ORIGINS").split(",")
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = environ.get("DJANGO_CORS_ALLOWED_ORIGINS", "").split(",")
 CORS_ALLOW_HEADERS = default_headers + (
     "cache-control",
     "pragma",
@@ -192,7 +192,7 @@ CORS_EXPOSE_HEADERS = ["Content-Type"]
 CORS_ALLOW_CREDENTIALS = True
 
 # CSRF configuration
-CSRF_TRUSTED_ORIGINS = environ.get("DJANGO_CSRF_TRUSTED_ORIGINS").split(",")
+CSRF_TRUSTED_ORIGINS = environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = "Strict"
