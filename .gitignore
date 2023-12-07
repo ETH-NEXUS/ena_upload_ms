@@ -168,3 +168,4 @@ cython_debug/
 /templates/**
 !/templates/default.yml.TEMPLATE
 /ena_templates
+.secrets
