@@ -155,14 +155,16 @@ class AnalysisJob(models.Model):
 
     @property
     def manifest(self):
-        manifest_text = f"""STUDY {self.job.result['experiment']['study_alias']}
-SAMPLE {self.job.result['experiment']['sample_alias']}
-RUN_REF {self.job.result['run']['accession']}
-"""
-        for key, value in self.data.items():
-            manifest_text += f"{key.upper()} {value}\n"
-        for file in self.analysisjob_files.all():
-            manifest_text += f"{file.file_type} {file.file_name}\n"
+        manifest_text = ""
+        if self.job.result:
+            manifest_text = f"""STUDY {self.job.result['experiment']['study_alias']}
+    SAMPLE {self.job.result['experiment']['sample_alias']}
+    RUN_REF {self.job.result['run']['accession']}
+    """
+            for key, value in self.data.items():
+                manifest_text += f"{key.upper()} {value}\n"
+            for file in self.analysisjob_files.all():
+                manifest_text += f"{file.file_type} {file.file_name}\n"
         return manifest_text
 
     class Meta:

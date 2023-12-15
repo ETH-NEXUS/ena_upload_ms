@@ -11,8 +11,7 @@
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.organizeImports.ruff": true
-      // "source.organizeImports": "explicit"
+      "source.organizeImports.ruff": "explicit"
     }
   },
   "python.testing.pytestArgs": ["api/app"],
