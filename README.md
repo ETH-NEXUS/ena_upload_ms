@@ -100,10 +100,14 @@ services:
     hostname: ena
     restart: unless-stopped
     volumes:
-      # - ./api/app:/app
-      - ./templates:/templates
+      - ./ena/templates:/templates
       - ./data:/data
-    env_file: .env
+    environment:
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${ENA_POSTGRES_DB}
+      - POSTGRES_USER=${ENA_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${ENA_POSTGRES_PASSWORD}
     depends_on:
       - db
   db:
@@ -118,16 +122,16 @@ services:
 In the `.env` you need to configure the following values:
 
 ```bash
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-POSTGRES_DB=ena
-POSTGRES_USER=ena
-POSTGRES_PASSWORD=b29a10670294502048c9
+ENA_POSTGRES_DB=ena
+ENA_POSTGRES_USER=ena
+ENA_POSTGRES_PASSWORD=changeme
 
 ENA_USERNAME=Webin-xxxxx
 ENA_PASSWORD=xxxxxxxxxxx
 ENA_USE_DEV_ENDPOINT=True
 ENA_UPLOAD_FREQ_SECS=5
+
+ENA_TOKEN=changeme
 ```
 
 ## Usage

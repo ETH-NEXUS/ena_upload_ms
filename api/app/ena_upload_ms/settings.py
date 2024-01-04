@@ -59,7 +59,15 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+]
+
+# We only add the middleware if DJANGO_CSRF_TRUSTED_ORIGINS env var is set
+if environ.get("DJANGO_CSRF_TRUSTED_ORIGINS"):
+    MIDDLEWARE.append(
+        "django.middleware.csrf.CsrfViewMiddleware",
+    )
+
+MIDDLEWARE += [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
