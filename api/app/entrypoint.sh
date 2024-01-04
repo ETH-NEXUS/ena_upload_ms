@@ -8,6 +8,7 @@ python manage.py wait_for_db
 python manage.py makemigrations
 python manage.py migrate
 python manage.py initadmin
+python manage.py initusertoken
 python manage.py db init
 python manage.py upload_process &
 
