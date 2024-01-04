@@ -197,7 +197,7 @@ FIXTURE_DIRS = []
 ALLOWED_HOSTS = environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 # CORS configuration
-if environ.get("DJANGO_CORS_ALLOWED_ORIGINS")
+if environ.get("DJANGO_CORS_ALLOWED_ORIGINS"):
     CORS_ALLOW_ALL_ORIGINS = False
     CORS_ALLOWED_ORIGINS = environ.get("DJANGO_CORS_ALLOWED_ORIGINS").split(",")
     CORS_ALLOW_HEADERS = default_headers + (
