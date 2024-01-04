@@ -57,7 +57,15 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+]
+
+# We only add the middleware if DJANGO_CORS_ALLOWED_ORIGINS env var is set
+if environ.get("DJANGO_CORS_ALLOWED_ORIGINS"):
+    MIDDLEWARE.append(
+        "corsheaders.middleware.CorsMiddleware",
+    )
+
+MIDDLEWARE += [
     "django.middleware.common.CommonMiddleware",
 ]
 
@@ -190,7 +198,7 @@ ALLOWED_HOSTS = environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 # CORS configuration
 CORS_ALLOW_ALL_ORIGINS = False if environ.get("DJANGO_CORS_ALLOWED_ORIGINS") else True
-CORS_ALLOWED_ORIGINS = environ.get("DJANGO_CORS_ALLOWED_ORIGINS" "*").split(",")
+CORS_ALLOWED_ORIGINS = environ.get("DJANGO_CORS_ALLOWED_ORIGINS", "*").split(",")
 CORS_ALLOW_HEADERS = default_headers + (
     "cache-control",
     "pragma",
