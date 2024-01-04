@@ -117,6 +117,7 @@ services:
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
+      - ./scripts/init_ena_db.sh:/docker-entrypoint-initdb.d/init_ena_db.sh
 ```
 
 In the `.env` you need to configure the following values:
@@ -132,6 +133,20 @@ ENA_USE_DEV_ENDPOINT=True
 ENA_UPLOAD_FREQ_SECS=5
 
 ENA_TOKEN=changeme
+```
+
+The database need to initialize the ena database with the correct username and password. This can be achieved using the following script as the `/docker-entrypoint-initdb.d/init_ena_db.sh`:
+
+```bash
+#!/bin/bash
+set -e
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    CREATE USER "$ENA_POSTGRES_USER";
+    ALTER USER "$ENA_POSTGRES_USER" PASSWORD '$ENA_POSTGRES_PASSWORD';
+    CREATE DATABASE "$ENA_POSTGRES_DB";
+    GRANT ALL PRIVILEGES ON DATABASE "$ENA_POSTGRES_DB" TO "$ENA_POSTGRES_USER";
+EOSQL
 ```
 
 ## Usage
