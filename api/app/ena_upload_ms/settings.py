@@ -190,18 +190,14 @@ ALLOWED_HOSTS = environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 # CORS configuration
 CORS_ALLOW_ALL_ORIGINS = False if environ.get("DJANGO_CORS_ALLOWED_ORIGINS") else True
-CORS_ALLOWED_ORIGINS = (
-    environ.get("DJANGO_CORS_ALLOWED_ORIGINS").split(",")
-    if environ.get("DJANGO_CORS_ALLOWED_ORIGINS")
-    else None
-)
+CORS_ALLOWED_ORIGINS = environ.get("DJANGO_CORS_ALLOWED_ORIGINS" "*").split(",")
 CORS_ALLOW_HEADERS = default_headers + (
     "cache-control",
     "pragma",
     "expires",
 )
 CORS_EXPOSE_HEADERS = ["Content-Type"]
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True if environ.get("DJANGO_CORS_ALLOWED_ORIGINS") else False
 
 # CSRF configuration
 CSRF_TRUSTED_ORIGINS = (
