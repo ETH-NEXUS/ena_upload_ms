@@ -197,25 +197,24 @@ FIXTURE_DIRS = []
 ALLOWED_HOSTS = environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 # CORS configuration
-CORS_ALLOW_ALL_ORIGINS = False if environ.get("DJANGO_CORS_ALLOWED_ORIGINS") else True
-CORS_ALLOWED_ORIGINS = environ.get("DJANGO_CORS_ALLOWED_ORIGINS", "*").split(",")
-CORS_ALLOW_HEADERS = default_headers + (
-    "cache-control",
-    "pragma",
-    "expires",
-)
-CORS_EXPOSE_HEADERS = ["Content-Type"]
-CORS_ALLOW_CREDENTIALS = True if environ.get("DJANGO_CORS_ALLOWED_ORIGINS") else False
+if environ.get("DJANGO_CORS_ALLOWED_ORIGINS")
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = environ.get("DJANGO_CORS_ALLOWED_ORIGINS").split(",")
+    CORS_ALLOW_HEADERS = default_headers + (
+        "cache-control",
+        "pragma",
+        "expires",
+    )
+    CORS_EXPOSE_HEADERS = ["Content-Type"]
+    CORS_ALLOW_CREDENTIALS = True
 
 # CSRF configuration
-CSRF_TRUSTED_ORIGINS = (
-    environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "*").split(",")
-    if environ.get("DJANGO_CSRF_TRUSTED_ORIGINS")
-    else []
-)
-CSRF_USE_SESSIONS = False
-CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SAMESITE = "Strict"
+if environ.get("DJANGO_CSRF_TRUSTED_ORIGINS"):
+    CSRF_TRUSTED_ORIGINS = environ.get("DJANGO_CSRF_TRUSTED_ORIGINS").split(",")
+    CSRF_USE_SESSIONS = False
+    CSRF_COOKIE_HTTPONLY = False
+    CSRF_COOKIE_SAMESITE = "Strict"
+
 SESSION_COOKIE_SAMESITE = "Strict"
 SESSION_COOKIE_AGE = 1209600  # (1209600) default: 2 weeks in seconds
 
