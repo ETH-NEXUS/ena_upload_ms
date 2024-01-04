@@ -205,9 +205,9 @@ CORS_ALLOW_CREDENTIALS = True
 
 # CSRF configuration
 CSRF_TRUSTED_ORIGINS = (
-    environ.get("DJANGO_CSRF_TRUSTED_ORIGINS").split(",")
+    environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "*").split(",")
     if environ.get("DJANGO_CSRF_TRUSTED_ORIGINS")
-    else None
+    else []
 )
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_HTTPONLY = False
