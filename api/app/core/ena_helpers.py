@@ -226,7 +226,7 @@ def ena_upload(job: Job):
 def webin_upload(job: AnalysisJob):
     webin = Command("/usr/bin/java")
     webin = webin.bake("-jar", "/opt/webin-cli.jar")
-    with tempfile.NamedTemporaryFile(delete_on_close=False) as mf:
+    with tempfile.NamedTemporaryFile(delete=False) as mf:
         mf.write(job.manifest.encode("utf-8"))
         mf.close()
         try:
