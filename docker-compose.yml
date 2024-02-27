@@ -3,6 +3,7 @@ volumes:
   pg_data:
 services:
   api:
+    platform: linux/amd64
     build:
       context: api
     hostname: api
@@ -15,6 +16,7 @@ services:
     depends_on:
       - db
   db:
+    platform: linux/amd64
     image: postgres:15-bookworm
     hostname: db
     restart: unless-stopped
