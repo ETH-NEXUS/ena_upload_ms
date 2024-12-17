@@ -294,3 +294,8 @@ ENA_BROWSER_URL = (
 ENA_UPLOAD_FREQ_SECS = int(environ.get("ENA_UPLOAD_FREQ_SECS", 5))
 TEMPLATE_DIR = "/templates"
 DATA_DIR = "/data"
+
+###
+# Proxy support
+###
+ENA_PROXY_PREFIX = environ.get("ENA_PROXY_PREFIX", "")

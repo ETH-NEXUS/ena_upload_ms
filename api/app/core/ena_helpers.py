@@ -230,20 +230,35 @@ def webin_upload(job: AnalysisJob):
         mf.write(job.manifest.encode("utf-8"))
         mf.close()
         try:
-            out = webin(
-                "-context",
-                "genome",
-                "-username",
-                settings.ENA_USERNAME,
-                "-password",
-                settings.ENA_PASSWORD,
-                "-manifest",
-                mf.name,
-                "-submit",
-                "-ascp",
-                "-test" if settings.ENA_USE_DEV_ENDPOINT else "",
-                _err_to_out=True,
-            )
+            if settings.ENA_USE_DEV_ENDPOINT:
+                out = webin(
+                    "-context",
+                    "genome",
+                    "-username",
+                    settings.ENA_USERNAME,
+                    "-password",
+                    settings.ENA_PASSWORD,
+                    "-manifest",
+                    mf.name,
+                    "-submit",
+                    "-ascp",
+                    "-test",
+                    _err_to_out=True,
+                )
+            else:
+                out = webin(
+                    "-context",
+                    "genome",
+                    "-username",
+                    settings.ENA_USERNAME,
+                    "-password",
+                    settings.ENA_PASSWORD,
+                    "-manifest",
+                    mf.name,
+                    "-submit",
+                    "-ascp",
+                    _err_to_out=True,
+                )
             log.debug(f"Submission output: {out}")
             accession = re.findall("ERZ[0-9]+", out, flags=re.MULTILINE)
             log.debug(f"Accessions: {accession}")
