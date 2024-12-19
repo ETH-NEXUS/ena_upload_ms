@@ -291,7 +291,10 @@ ENA_BROWSER_URL = (
     if ENA_USE_DEV_ENDPOINT
     else "https://www.ebi.ac.uk/ena/browser/view"
 )
-ENA_UPLOAD_FREQ_SECS = int(environ.get("ENA_UPLOAD_FREQ_SECS", 5))
+# How long to wait after queued jobs were processed
+ENA_UPLOAD_FREQ_SECS = int(environ.get("ENA_UPLOAD_FREQ_SECS", 60))
+# How long to wait after running the upload command
+ENA_UPLOAD_THROTTLE_SECS = int(environ.get("ENA_UPLOAD_THROTTLE_SECS", 30))
 TEMPLATE_DIR = "/templates"
 DATA_DIR = "/data"
 

@@ -30,19 +30,24 @@ from drf_spectacular.views import (
 
 urlpatterns = []
 
+# to support proxying to the ena service
+prefix = settings.ENA_PROXY_PREFIX
+
+print('ENA_PROXY_PREFIX', prefix)
+
 urlpatterns = [
-    path("api-auth/", include("rest_framework.urls")),
-    path("admin/", admin.site.urls),
-    path("api/", include(router.urls)),
-    path("api/token/", authtoken_views.obtain_auth_token),
-    path("api/doc/", SpectacularAPIView.as_view(), name="schema"),
+    path(f"{prefix}api-auth/", include("rest_framework.urls")),
+    path(f"{prefix}admin/", admin.site.urls),
+    path(f"{prefix}api/", include(router.urls)),
+    path(f"{prefix}api/token/", authtoken_views.obtain_auth_token),
+    path(f"{prefix}api/doc/", SpectacularAPIView.as_view(), name="schema"),
     path(
-        "api/doc/swagger/",
+        f"{prefix}api/doc/swagger/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
     path(
-        "api/doc/redoc/",
+        f"{prefix}api/doc/redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),

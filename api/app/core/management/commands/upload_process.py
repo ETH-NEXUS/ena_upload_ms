@@ -23,6 +23,8 @@ class Command(BaseCommand):
                     queued_job.save()
                     log.exception(ex)
                     log.exception(ex.__traceback__)
+                finally:
+                    time.sleep(settings.ENA_UPLOAD_THROTTLE_SECS)
 
             queued_analysisjobs = AnalysisJob.objects.filter(status="QUEUED")
             for queued_analysisjob in queued_analysisjobs:
@@ -42,5 +44,7 @@ class Command(BaseCommand):
                     queued_analysisjob.save()
                     log.exception(ex)
                     log.exception(ex.__traceback__)
+                finally:
+                    time.sleep(settings.ENA_UPLOAD_THROTTLE_SECS)
 
             time.sleep(settings.ENA_UPLOAD_FREQ_SECS)
