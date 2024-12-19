@@ -33,8 +33,6 @@ urlpatterns = []
 # to support proxying to the ena service
 prefix = settings.ENA_PROXY_PREFIX
 
-print('ENA_PROXY_PREFIX', prefix)
-
 urlpatterns = [
     path(f"{prefix}api-auth/", include("rest_framework.urls")),
     path(f"{prefix}admin/", admin.site.urls),
