@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, APIException
 from django.conf import settings
 from django.utils import timezone as tz
+from django.db.models import Q, Count
 from .serializers import (
     JobSerializer,
     AnalysisJobSerializer,
@@ -137,6 +138,24 @@ class JobViewset(
         new_job.save()
         result = JobSerializer(new_job, context={"request": request})
         return Response(result.data)
+
+    @action(detail=False, methods=["get"])
+    def release_all(self, request):
+        """Release all not yet released jobs"""
+        jobs = Job.objects.filter(
+            status="SUBMITTED",
+            action="ADD"
+        ).annotate(
+            children_with_released=Count(
+                'children',
+                filter=Q(children__action="RELEASE")
+            )
+        ).filter(
+            children_with_released=0
+        )
+        for job in jobs:
+            self.__release_cancel(request, job.id, "RELEASE")
+
 
 
 class AnalysisJobViewset(
