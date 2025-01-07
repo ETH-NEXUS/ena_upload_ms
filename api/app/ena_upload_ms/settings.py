@@ -294,7 +294,7 @@ ENA_BROWSER_URL = (
 # How long to wait after queued jobs were processed
 ENA_UPLOAD_FREQ_SECS = int(environ.get("ENA_UPLOAD_FREQ_SECS", 60))
 # How long to wait after running the upload command
-ENA_UPLOAD_THROTTLE_SECS = int(environ.get("ENA_UPLOAD_THROTTLE_SECS", 30))
+ENA_UPLOAD_THROTTLE_SECS = int(environ.get("ENA_UPLOAD_THROTTLE_SECS", 5))
 TEMPLATE_DIR = "/templates"
 DATA_DIR = "/data"
 

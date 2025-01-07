@@ -1,20 +1,23 @@
+import json
+import re
+import tempfile
+from datetime import datetime as dt
+from os.path import abspath, basename, dirname, isfile, join, splitext
+
 import pandas as pd
 import yaml
-import re
-import json
-import tempfile
-from sh import Command, ErrorReturnCode
-from os.path import abspath, basename, dirname, isfile, join, splitext
-from core import log
 from box import Box
 from django.conf import settings
-from ena_upload import ena_upload as ena
-from rest_framework.exceptions import ValidationError
-from lxml import etree
-from datetime import datetime as dt
 from django.utils import timezone as tz
-from .models import Job, File, AnalysisJob
+from ena_upload import ena_upload as ena
+from lxml import etree
+from rest_framework.exceptions import ValidationError
+from sh import Command, ErrorReturnCode
+
+from core import log
+
 from .helpers import merge
+from .models import AnalysisJob, File, Job
 
 SCHEMAS = ["study", "sample", "experiment", "run"]
 STATUS_CHANGES = {
@@ -145,7 +148,7 @@ def ena_upload(job: Job):
             f"There is no table submitted having at least one row with {job.action} as action in the status column."
         )
 
-    if job.action == "ADD":
+    if job.action in ["ADD", "MODIFY"]:
         if "run" in schema_targets:
             schema_targets["run"] = handle_run(job, schema_targets["run"])
             if schema_targets["run"] is None:

@@ -1,24 +1,26 @@
-import yaml
 from datetime import datetime as dt
-from os.path import join, isfile
-from rest_framework import status, mixins, viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError, APIException
+from os.path import isfile, join
+
+import yaml
 from django.conf import settings
+from django.db.models import Count, Q
 from django.utils import timezone as tz
-from django.db.models import Q, Count
+from django.utils.translation import gettext_lazy as _
+from ena_upload import ena_upload as ena
+from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import APIException, ValidationError
+from rest_framework.response import Response
+
+from .ena_helpers import SCHEMAS, apply_template
+from .helpers import merge
+from .models import AnalysisJob, Job
 from .serializers import (
-    JobSerializer,
+    AnalysisFileSerializer,
     AnalysisJobSerializer,
     FileSerializer,
-    AnalysisFileSerializer,
+    JobSerializer,
 )
-from .models import Job, AnalysisJob
-from .ena_helpers import apply_template, SCHEMAS
-from .helpers import merge
-from ena_upload import ena_upload as ena
-from django.utils.translation import gettext_lazy as _
 
 
 ###
@@ -142,20 +144,17 @@ class JobViewset(
     @action(detail=False, methods=["get"])
     def release_all(self, request):
         """Release all not yet released jobs"""
-        jobs = Job.objects.filter(
-            status="SUBMITTED",
-            action="ADD"
-        ).annotate(
-            children_with_released=Count(
-                'children',
-                filter=Q(children__action="RELEASE")
+        jobs = (
+            Job.objects.filter(status="SUBMITTED", action="ADD")
+            .annotate(
+                children_with_released=Count(
+                    "children", filter=Q(children__action="RELEASE")
+                )
             )
-        ).filter(
-            children_with_released=0
+            .filter(children_with_released=0)
         )
         for job in jobs:
             self.__release_cancel(request, job.id, "RELEASE")
-
 
 
 class AnalysisJobViewset(
