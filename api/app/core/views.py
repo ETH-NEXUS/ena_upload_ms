@@ -133,10 +133,11 @@ class JobViewset(
         new_job = job.clone(self.request.user, "MODIFY")
         data = request.data.get("data")
         # We filter out all irrelevant schemas for the modification
-        for schema in SCHEMAS:
-            if schema not in data and schema in new_job.data:
-                del new_job.data[schema]
-        new_job.data = merge(new_job.data, data)
+        if data is not None:
+            for schema in SCHEMAS:
+                if schema not in data and schema in new_job.data:
+                    del new_job.data[schema]
+            new_job.data = merge(new_job.data, data)
         new_job.save()
         result = JobSerializer(new_job, context={"request": request})
         return Response(result.data)

@@ -9,9 +9,11 @@ import yaml
 from box import Box
 from django.conf import settings
 from django.utils import timezone as tz
+from django.utils.translation import gettext_lazy as _
 from ena_upload import ena_upload as ena
 from lxml import etree
-from rest_framework.exceptions import ValidationError
+from rest_framework import status
+from rest_framework.exceptions import APIException, ValidationError
 from sh import Command, ErrorReturnCode
 
 from core import log
@@ -26,6 +28,12 @@ STATUS_CHANGES = {
     "CANCEL": "CANCELLED",
     "RELEASE": "RELEASED",
 }
+
+
+class FTPUploadError(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = _("File(s) could not be uploaded via FTP.")
+    default_code = "ftp_upload_error"
 
 
 def apply_template(job: Job):
@@ -86,6 +94,45 @@ def to_dataframe(job: Job):
     return schema_dataframe
 
 
+def submit_data(file_paths: str):
+    """Submit data to webin ftp server.
+
+    :param file_paths: a dictionary of filename string and file_path string
+    :param args: the command-line arguments parsed by ArgumentParser
+    """
+    ftp_host = "webin2.ebi.ac.uk"
+
+    log.info("\nConnecting to webin2.ebi.ac.uk....")
+    try:
+        ftps = ena.MyFTP_TLS(timeout=120)
+        ftps.context.set_ciphers("HIGH:!DH:!aNULL")
+        ftps.connect(ftp_host, port=21)
+        ftps.auth()
+        # log.debug(f"U/N, P/W: {settings.ENA_USERNAME}, {settings.ENA_PASSWORD}")
+        ftps.login(settings.ENA_USERNAME, settings.ENA_PASSWORD)
+        ftps.prot_p()
+    except IOError as ioe:
+        log.error(
+            "ERROR: could not connect to the ftp server.\
+               Please check your login details."
+        )
+        log.error(ioe)
+        raise FTPUploadError(
+            f"Cannot connect to the ftp server {ftp_host} while intending to upload file {file_paths}: {ioe}"
+        )
+    for filename, path in file_paths.items():
+        log.info(f"Uploading {path}...")
+        try:
+            log.info(ftps.storbinary(f"STOR {filename}", open(path, "rb")))
+        except BaseException as err:
+            log.error(f"ERROR: {err}")
+            log.error(
+                "ERROR: If your connection times out at this stage, it probably is because of a firewall that is in place. FTP is used in passive mode and connection will be opened to one of the ports: 40000 and 50000."
+            )
+            raise FTPUploadError(f"Cannot upload file {path} to {ftp_host}: {err}")
+    log.info(ftps.quit())
+
+
 def handle_run(job: Job, schema_target):
     df = schema_target
     file_paths = {}
@@ -114,7 +161,8 @@ def handle_run(job: Job, schema_target):
         ]
         df["file_checksum"] = file_md5.values()
 
-        ena.submit_data(file_paths, settings.ENA_PASSWORD, settings.ENA_USERNAME)
+        # ena.submit_data(file_paths, settings.ENA_PASSWORD, settings.ENA_USERNAME)
+        submit_data(file_paths)
         return df
     else:
         return None

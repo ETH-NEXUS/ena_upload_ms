@@ -1,8 +1,10 @@
-from django.db import models
+from copy import copy
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
-from django.conf import settings
-from copy import copy
+from django.db import models
+
 from .helpers import merge
 
 
@@ -63,18 +65,26 @@ class Job(models.Model):
         if not self.result:
             return {}
         return {
-            "experiment": f"{settings.ENA_BROWSER_URL}/{self.result['experiment']['accession']}"
-            if "experiment" in self.result
-            else "",
-            "sample": f"{settings.ENA_BROWSER_URL}/{self.result['sample']['accession']}"
-            if "sample" in self.result
-            else "",
-            "run": f"{settings.ENA_BROWSER_URL}/{self.result['run']['accession']}"
-            if "run" in self.result
-            else "",
-            "study": f"{settings.ENA_BROWSER_URL}/{self.result['study']['accession']}"
-            if "study" in self.result
-            else "",
+            "experiment": (
+                f"{settings.ENA_BROWSER_URL}/{self.result['experiment']['accession']}"
+                if "experiment" in self.result
+                else ""
+            ),
+            "sample": (
+                f"{settings.ENA_BROWSER_URL}/{self.result['sample']['accession']}"
+                if "sample" in self.result
+                else ""
+            ),
+            "run": (
+                f"{settings.ENA_BROWSER_URL}/{self.result['run']['accession']}"
+                if "run" in self.result
+                else ""
+            ),
+            "study": (
+                f"{settings.ENA_BROWSER_URL}/{self.result['study']['accession']}"
+                if "study" in self.result
+                else ""
+            ),
         }
 
     class Meta:
