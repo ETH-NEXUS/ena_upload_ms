@@ -163,7 +163,8 @@ cython_debug/
 .secret.yml
 /data
 /tmp
-/dumps
+/dumps/*
+!/dumps/restore.sh
 .DS_Store
 /ena_upload_ng
 /templates/**
