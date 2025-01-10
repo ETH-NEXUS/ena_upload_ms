@@ -1,7 +1,8 @@
 from drf_auto_endpoint.endpoints import Endpoint
-from .models import Job, File, AnalysisJob, AnalysisFile
-from .views import JobViewset, FileViewset, AnalysisJobViewset, AnalysisFileViewset
 from drf_auto_endpoint.router import register
+
+from .models import AnalysisFile, AnalysisJob, File, Job
+from .views import AnalysisFileViewset, AnalysisJobViewset, FileViewset, JobViewset
 
 
 class DefaultEndpoint(Endpoint):
@@ -21,7 +22,7 @@ class DefaultEndpoint(Endpoint):
 class JobEndpoint(DefaultEndpoint):
     model = Job
     base_viewset = JobViewset
-    filter_fields = ("status",)
+    # filter_fields = ("status", "action")
 
 
 @register

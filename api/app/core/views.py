@@ -13,6 +13,7 @@ from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.response import Response
 
 from .ena_helpers import SCHEMAS, apply_template
+from .filters import JobFilterSet
 from .helpers import merge
 from .models import AnalysisJob, Job
 from .serializers import (
@@ -42,6 +43,7 @@ class JobViewset(
     viewsets.GenericViewSet,
 ):
     serializer_class = JobSerializer
+    filterset_class = JobFilterSet
 
     def perform_create(self, serializer: JobSerializer):
         job = serializer.save(owner=self.request.user)

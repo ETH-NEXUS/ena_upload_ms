@@ -8,3 +8,5 @@ services:
   db:
     ports:
       - "54342:5432"
+    volumes:
+      - ./dumps:/dumps
