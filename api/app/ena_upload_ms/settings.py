@@ -11,13 +11,17 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import logging
-from pathlib import Path
 from os import environ
+from pathlib import Path
+
 from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# if dev endpoint is used we also want to select another database,
+# therefore we need to check the env var here.
+ENA_USE_DEV_ENDPOINT = (environ.get("ENA_USE_DEV_ENDPOINT", "True")) == "True"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -110,7 +114,11 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "HOST": environ.get("POSTGRES_HOST", "db"),
         "PORT": environ.get("POSTGRES_PORT", "5432"),
-        "NAME": environ.get("POSTGRES_DB", "ena"),
+        "NAME": (
+            environ.get("POSTGRES_DB", "ena")
+            if not ENA_USE_DEV_ENDPOINT
+            else f"{environ.get('POSTGRES_DB', 'ena')}_dev"
+        ),
         "USER": environ.get("POSTGRES_USER", "ena"),
         "PASSWORD": environ.get("POSTGRES_PASSWORD"),
     }
@@ -280,7 +288,6 @@ SPECTACULAR_SETTINGS = {
 ###
 ENA_USERNAME = environ.get("ENA_USERNAME", None)
 ENA_PASSWORD = environ.get("ENA_PASSWORD", None)
-ENA_USE_DEV_ENDPOINT = (environ.get("ENA_USE_DEV_ENDPOINT", "True")) == "True"
 ENA_ENDPOINT = (
     "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/?auth=ENA"
     if ENA_USE_DEV_ENDPOINT
