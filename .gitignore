@@ -162,7 +162,7 @@ cython_debug/
 .envrc
 .secret.yml
 /data
-/tmp
+**/tmp
 /dumps/*
 !/dumps/restore.sh
 .DS_Store
