@@ -158,6 +158,10 @@ class JobViewset(
         )
         for job in jobs:
             self.__release_cancel(request, job.id, "RELEASE")
+        return Response(
+            f"{len(jobs)} jobs triggered for release.",
+            status=status.HTTP_200_OK,
+        )
 
 
 class AnalysisJobViewset(
