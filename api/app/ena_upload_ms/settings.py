@@ -304,6 +304,8 @@ ENA_UPLOAD_FREQ_SECS = int(environ.get("ENA_UPLOAD_FREQ_SECS", 60))
 ENA_UPLOAD_THROTTLE_SECS = int(environ.get("ENA_UPLOAD_THROTTLE_SECS", 5))
 TEMPLATE_DIR = "/templates"
 DATA_DIR = "/data"
+ENA_SUBMISSION_TOOL = "ena_upload_ms"
+ENA_SUBMISSION_TOOL_VERSION = float(environ.get("GIT_VERSION", "0.99"))
 
 ###
 # Proxy support

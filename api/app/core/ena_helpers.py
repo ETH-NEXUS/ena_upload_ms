@@ -220,7 +220,10 @@ def ena_upload(job: Job):
         raise ValidationError(
             "Checklist is not defined. Please specify 'checklist' in the config."
         )
-    tool = {"tool_name": "ena_upload_ms", "tool_version": 0.1}
+    tool = {
+        "tool_name": settings.ENA_SUBMISSION_TOOL,
+        "tool_version": settings.ENA_SUBMISSION_TOOL_VERSION,
+    }
 
     if job.action in ["ADD", "MODIFY"]:
         schema_xmls = ena.run_construct(
