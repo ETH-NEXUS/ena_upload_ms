@@ -165,16 +165,32 @@ class AnalysisJob(models.Model):
 
     @property
     def manifest(self):
-        manifest_text = ""
-        if self.job.result:
-            manifest_text = f"""STUDY {self.job.result['experiment']['study_alias']}
-    SAMPLE {self.job.result['experiment']['sample_alias']}
-    RUN_REF {self.job.result['run']['accession']}
-    """
-            for key, value in self.data.items():
-                manifest_text += f"{key.upper()} {value}\n"
-            for file in self.analysisjob_files.all():
-                manifest_text += f"{file.file_type} {file.file_name}\n"
+        try:
+            manifest_text = ""
+            if self.job.result:
+                # Merge different results from different child jobs
+                consolidated_job_result = self.job.result
+                for child in self.job.children.all().order_by("created_at"):
+                    if child.status != "ERROR" and child.result:
+                        consolidated_job_result = merge(
+                            consolidated_job_result, child.result
+                        )
+                if "experiment" in consolidated_job_result:
+                    manifest_text = (
+                        f"STUDY {consolidated_job_result['experiment']['study_alias']}\n"
+                        f"SAMPLE {consolidated_job_result['experiment']['sample_alias']}\n"
+                    )
+                if "run" in consolidated_job_result:
+                    manifest_text += (
+                        f"RUN_REF {consolidated_job_result['run']['accession']}\n"
+                    )
+
+                for key, value in self.data.items():
+                    manifest_text += f"{key.upper()} {value}\n"
+                for file in self.analysisjob_files.all():
+                    manifest_text += f"{file.file_type} {file.file_name}\n"
+        except Exception as ex:
+            return f"ERROR generating manifest: {ex}"
         return manifest_text
 
     class Meta:

@@ -12,6 +12,8 @@ services:
       - ./templates:/templates
       - ./data:/data
     env_file: .env
+    environment:
+      - GIT_VERSION=${GIT_VERSION}
     depends_on:
       - db
   db:

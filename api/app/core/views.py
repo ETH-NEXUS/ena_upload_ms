@@ -190,7 +190,7 @@ class AnalysisJobViewset(
             job.save()
             return job
         else:
-            raise ValidationError("Template file {template_file} does not exist.")
+            raise ValidationError(f"Template file {template_file} does not exist.")
 
     def perform_destroy(self, instance):
         if instance.status == "QUEUED":

@@ -1,9 +1,10 @@
 import time
-from django.core.management.base import BaseCommand
-from django.conf import settings
+
 from core import log
-from core.models import Job, AnalysisJob
 from core.ena_helpers import ena_upload, webin_upload
+from core.models import AnalysisJob, Job
+from django.conf import settings
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
@@ -38,8 +39,13 @@ class Command(BaseCommand):
                         log.warning(
                             f"Analysis job {queued_analysisjob} has no assigned files!"
                         )
+                        queued_analysisjob.status = "ERROR"
+                        queued_analysisjob.raw_result = (
+                            "Analysis job has no assigned files!"
+                        )
+                        queued_analysisjob.save()
                 except Exception as ex:
-                    queued_analysisjob.status = "QUEUED"
+                    queued_analysisjob.status = "ERROR"
                     queued_analysisjob.raw_result = ex
                     queued_analysisjob.save()
                     log.exception(ex)

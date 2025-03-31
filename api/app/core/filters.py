@@ -26,6 +26,27 @@ class JobFilterSet(filters.FilterSet):
     )
     run__alias = filters.CharFilter(label="Run alias", method=alias_filter)
 
+    created_at = filters.DateFromToRangeFilter(label="Created at")
+    exact_created_at = filters.DateTimeFromToRangeFilter(label="Exact created at")
+    sample__submission_date = filters.CharFilter(
+        lookup_expr="icontains",
+        label="Sample submission date (contains)",
+        field_name="result__sample__submission_date",
+    )
+
     class Meta:
         model = Job
-        fields = ("status", "action", "sample", "experiment", "run", "files")
+        fields = (
+            "status",
+            "action",
+            "sample",
+            "experiment",
+            "run",
+            "sample__alias",
+            "experiment__alias",
+            "run__alias",
+            "files",
+            "created_at",
+            "exact_created_at",
+            "sample__submission_date",
+        )
