@@ -39,6 +39,7 @@ class JobFilterSet(filters.FilterSet):
         fields = (
             "status",
             "action",
+            "template",
             "sample",
             "experiment",
             "run",

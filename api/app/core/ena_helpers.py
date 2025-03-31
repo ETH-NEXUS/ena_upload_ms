@@ -133,6 +133,17 @@ def submit_data(file_paths: str):
     log.info(ftps.quit())
 
 
+def evaluate_file_type(file):
+    parts = splitext(file)
+    if len(parts) > 1:
+        if parts[1] == ".gz":
+            parts = splitext(parts[0])
+    if len(parts) > 1:
+        return parts[1].replace(".", "")
+    else:
+        raise ValidationError(f"Cannot determine file type: {file}.")
+
+
 def handle_run(job: Job, schema_target):
     df = schema_target
     file_paths = {}
@@ -145,7 +156,7 @@ def handle_run(job: Job, schema_target):
                 file_name=abspath(file),
                 defaults={
                     "job": job,
-                    "file_type": splitext(file)[1].replace(".", ""),
+                    "file_type": evaluate_file_type(file),
                     "md5sum": ena.get_md5(file),
                 },
             )
@@ -156,9 +167,7 @@ def handle_run(job: Job, schema_target):
         }
         pd.concat([df] * len(file_md5), ignore_index=True)
         df["file_name"] = file_md5.keys()
-        df["file_type"] = [
-            splitext(file)[1].replace(".", "") for file in file_md5.keys()
-        ]
+        df["file_type"] = [evaluate_file_type(file) for file in file_md5.keys()]
         df["file_checksum"] = file_md5.values()
 
         # ena.submit_data(file_paths, settings.ENA_PASSWORD, settings.ENA_USERNAME)
