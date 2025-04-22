@@ -342,6 +342,36 @@ def webin_upload(job: AnalysisJob):
     job.save()
 
 
+def webin_validate(job: AnalysisJob):
+    webin = Command("/usr/bin/java")
+    webin = webin.bake("-jar", "/opt/webin-cli.jar")
+    with tempfile.NamedTemporaryFile(delete=False) as mf:
+        mf.write(job.manifest.encode("utf-8"))
+        mf.close()
+        try:
+            out = webin(
+                "-context",
+                "genome",
+                "-username",
+                settings.ENA_USERNAME,
+                "-password",
+                settings.ENA_PASSWORD,
+                "-manifest",
+                mf.name,
+                "-validate",
+                "-ascp",
+                "-test",
+                _err_to_out=True,
+            )
+            log.debug(f"Validation output: {out}")
+            return out
+        except ErrorReturnCode as e:
+            if isinstance(e, str):
+                return e
+            else:
+                return e.stdout.decode("utf-8") + e.stderr.decode("utf-8")
+
+
 def process_receipt(receipt, action):
     receipt_root = etree.fromstring(receipt)
     success = receipt_root.get("success")

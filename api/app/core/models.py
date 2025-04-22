@@ -224,3 +224,6 @@ class AnalysisFile(models.Model):
 
     class Meta:
         unique_together = ("job", "file_name")
+
+    def __str__(self):
+        return self.file_name

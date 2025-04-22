@@ -1,5 +1,7 @@
+import re
 from datetime import datetime as dt
-from os.path import isfile, join
+from os import listdir
+from os.path import isdir, isfile, join
 
 import yaml
 from django.conf import settings
@@ -12,7 +14,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.response import Response
 
-from .ena_helpers import SCHEMAS, apply_template
+from .ena_helpers import SCHEMAS, apply_template, webin_validate
 from .filters import JobFilterSet
 from .helpers import merge
 from .models import AnalysisJob, Job
@@ -97,7 +99,7 @@ class JobViewset(
     @action(detail=True, methods=["get"])
     def enqueue(self, request, pk=None):
         job = Job.objects.get(pk=pk)
-        if job.status != "SUBMITTED":
+        if job.status != "SUBMITTED" or ("force" in request.query_params):
             job.status = "QUEUED"
             job.save()
             serializer = JobSerializer(instance=job, context={"request": request})
@@ -213,6 +215,48 @@ class AnalysisJobViewset(
                 "Requeue not allowed on successfully submitted jobs.",
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+    @action(detail=True, methods=["get"])
+    def validate(self, request, pk=None):
+        def read_lines(file):
+            with open(file, "r") as rf:
+                return [line.replace("\n", "") for line in rf.readlines()]
+
+        job = AnalysisJob.objects.get(pk=pk)
+        out = webin_validate(job).split("\n")
+        infos = []
+        errors = []
+        files = {}
+        for line in out:
+            if line.startswith("INFO"):
+                infos.append(line.replace("INFO : ", "").split(". "))
+            if line.startswith("ERROR"):
+                sentences = line.replace("ERROR: ", "").split(". ")
+                for sentence in sentences:
+                    match = re.search(r'(/tmp/[^," ]+)', sentence)
+                    if match:
+                        report_file = match.group(1)
+                        if isfile(report_file):
+                            files[report_file] = read_lines(report_file)
+                        elif isdir(report_file):
+                            for file in listdir(report_file):
+                                files[join(report_file, file)] = read_lines(
+                                    join(report_file, file)
+                                )
+                        else:
+                            files[report_file] = "ERROR: not found"
+                    errors.append(sentence)
+        return Response(
+            {
+                "Job": {"id": job.id},
+                "Validation": {
+                    "OUT": out,
+                    "INFO": infos,
+                    "ERROR": errors,
+                    "REPORTS": files,
+                },
+            }
+        )
 
 
 class FileViewset(

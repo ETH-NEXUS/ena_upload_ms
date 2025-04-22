@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Job, AnalysisJob
+
+from .models import AnalysisFile, AnalysisJob, Job
 
 
 @admin.register(Job)
@@ -20,3 +21,8 @@ class AnalysisJobAdmin(admin.ModelAdmin):
     search_fields = ()
 
     list_filter = ("status",)
+
+
+@admin.register(AnalysisFile)
+class AnalysisFileAdmin(admin.ModelAdmin):
+    pass
