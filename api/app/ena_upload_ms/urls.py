@@ -17,7 +17,7 @@ Including another URLconf
 
 import re
 
-from core.views import ToggleDev
+from core.views import Dev
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path, re_path
@@ -57,7 +57,7 @@ urlpatterns = [
     ),
     path(
         f"{prefix}api/dev/",
-        ToggleDev.as_view(),
+        Dev.as_view(),
         name="dev",
     ),
 ]

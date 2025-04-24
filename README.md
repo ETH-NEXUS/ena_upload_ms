@@ -195,6 +195,13 @@ curl 'http://domain.com/api/analysisjobs/' \
 }'
 ```
 
+### Validate an Analysis Job
+
+```bash
+curl 'http://domain.com/api/analysisjobs/<id>/validate/' \
+-H 'Authorization: token xxxxxxxxxxxxxx'
+```
+
 ### Submit an Analysis File
 
 ```bash
@@ -226,5 +233,21 @@ curl http://domain.com/api/jobs/<job_id>/release/ \
 
 ```bash
 curl http://domain.com/api/analysisjobs/<job_id>/release/ \
+-H 'Authorization: token xxxxxxxxxxxxxx'
+```
+
+### Switch between dev and prod
+
+Enable dev mode:
+
+```bash
+curl http://domain.com/api/dev/?value=true \
+-H 'Authorization: token xxxxxxxxxxxxxx'
+```
+
+Disable dev mode: [⚠️ Enable prod mode]
+
+```bash
+curl http://domain.com/api/dev/?value=false \
 -H 'Authorization: token xxxxxxxxxxxxxx'
 ```

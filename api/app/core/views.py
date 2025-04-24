@@ -289,7 +289,7 @@ class AnalysisFileViewset(
             raise ValidationError(f"File {file.file_name} does not exist.")
 
 
-class ToggleDev(APIView):
+class Dev(APIView):
     def get(self, request, *args, **kwargs):
         value = request.query_params.get("value")
 
