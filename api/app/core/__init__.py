@@ -1,5 +1,6 @@
 import logging
 from os import makedirs
+
 from rich.logging import RichHandler
 
 ###

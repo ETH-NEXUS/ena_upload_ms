@@ -1,5 +1,6 @@
 import time
 
+from constance import config
 from core import log
 from core.ena_helpers import ena_upload, webin_upload
 from core.models import AnalysisJob, Job
@@ -10,7 +11,9 @@ from django.core.management.base import BaseCommand
 class Command(BaseCommand):
     def handle(self, *args, **options):
         while True:
-            log.debug("Handling queued jobs...")
+            log.debug(
+                f"{'[DEV] ' if config.ENA_USE_DEV_ENDPOINT else ''}Handling queued jobs..."
+            )
             queued_jobs = Job.objects.filter(status="QUEUED")
             for queued_job in queued_jobs:
                 log.info(f"Handling queued job {queued_job}...")

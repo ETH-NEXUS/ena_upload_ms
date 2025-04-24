@@ -19,10 +19,6 @@ from corsheaders.defaults import default_headers
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# if dev endpoint is used we also want to select another database,
-# therefore we need to check the env var here.
-ENA_USE_DEV_ENDPOINT = (environ.get("ENA_USE_DEV_ENDPOINT", "True")) == "True"
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -55,6 +51,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "drf_spectacular_sidecar",
     "drf_auto_endpoint",
+    "constance",
     "core",
 ]
 
@@ -114,15 +111,14 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "HOST": environ.get("POSTGRES_HOST", "db"),
         "PORT": environ.get("POSTGRES_PORT", "5432"),
-        "NAME": (
-            environ.get("POSTGRES_DB", "ena")
-            if not ENA_USE_DEV_ENDPOINT
-            else f"{environ.get('POSTGRES_DB', 'ena')}_dev"
-        ),
+        "NAME": environ.get("POSTGRES_DB", "ena"),
         "USER": environ.get("POSTGRES_USER", "ena"),
         "PASSWORD": environ.get("POSTGRES_PASSWORD"),
     }
 }
+DATABASES["dev"] = DATABASES["default"].copy()
+DATABASES["dev"]["NAME"] = f"{environ.get('POSTGRES_DB', 'ena')}_dev"
+DATABASE_ROUTERS = ["ena_upload_ms.dbrouter.DynamicDbRouter"]
 
 
 # Password validation
@@ -288,16 +284,7 @@ SPECTACULAR_SETTINGS = {
 ###
 ENA_USERNAME = environ.get("ENA_USERNAME", None)
 ENA_PASSWORD = environ.get("ENA_PASSWORD", None)
-ENA_ENDPOINT = (
-    "https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/?auth=ENA"
-    if ENA_USE_DEV_ENDPOINT
-    else "https://www.ebi.ac.uk/ena/submit/drop-box/submit/?auth=ENA"
-)
-ENA_BROWSER_URL = (
-    "https://wwwdev.ebi.ac.uk/ena/browser/view"
-    if ENA_USE_DEV_ENDPOINT
-    else "https://www.ebi.ac.uk/ena/browser/view"
-)
+
 # How long to wait after queued jobs were processed
 ENA_UPLOAD_FREQ_SECS = int(environ.get("ENA_UPLOAD_FREQ_SECS", 60))
 # How long to wait after running the upload command
@@ -311,3 +298,14 @@ ENA_SUBMISSION_TOOL_VERSION = environ.get("GIT_VERSION", "v0.99.0")
 # Proxy support
 ###
 ENA_PROXY_PREFIX = environ.get("ENA_PROXY_PREFIX", "")
+
+###
+# Dynamic settings
+###
+CONSTANCE_BACKEND = "constance.backends.database.DatabaseBackend"
+CONSTANCE_CONFIG = {
+    "ENA_USE_DEV_ENDPOINT": (
+        (environ.get("ENA_USE_DEV_ENDPOINT", "True")) == "True",
+        "Use the ENA dev endpoint",
+    ),
+}

@@ -10,6 +10,7 @@ django==5.0.2
 django_extensions==3.2.3
 django-cors-headers==4.3.1
 django-filter==23.4
+django-constance==4.3.2
 djangorestframework==3.14.0
 djangorestframework-csv==3.0.1
 drf-spectacular[sidecar]==0.26.5

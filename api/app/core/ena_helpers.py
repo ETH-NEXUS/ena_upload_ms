@@ -7,10 +7,12 @@ from os.path import abspath, basename, dirname, isfile, join, splitext
 import pandas as pd
 import yaml
 from box import Box
+from constance import config
 from django.conf import settings
 from django.utils import timezone as tz
 from django.utils.translation import gettext_lazy as _
 from ena_upload import ena_upload as ena
+from ena_upload_ms.dynamic_settings import dynamic_settings
 from lxml import etree
 from rest_framework import status
 from rest_framework.exceptions import APIException, ValidationError
@@ -87,7 +89,7 @@ def to_dataframe(job: Job):
             df,
             schema,
             job.action,
-            settings.ENA_USE_DEV_ENDPOINT,
+            config.ENA_USE_DEV_ENDPOINT,
             auto_action=False,
         )
         schema_dataframe[schema] = df
@@ -262,7 +264,7 @@ def ena_upload(job: Job):
         job.raw_submission = sf.read()
     schema_xmls["submission"] = submission_xml
 
-    url = settings.ENA_ENDPOINT
+    url = dynamic_settings.ENA_ENDPOINT()
     log.info(f"Submitting XMLs to ENA server: {url}")
     receipt = ena.send_schemas(
         schema_xmls, url, settings.ENA_USERNAME, settings.ENA_PASSWORD
@@ -293,7 +295,7 @@ def webin_upload(job: AnalysisJob):
         mf.write(job.manifest.encode("utf-8"))
         mf.close()
         try:
-            if settings.ENA_USE_DEV_ENDPOINT:
+            if config.ENA_USE_DEV_ENDPOINT:
                 out = webin(
                     "-context",
                     "genome",

@@ -10,26 +10,27 @@ class Command(BaseCommand):
     """Django command to pause execution until database is available"""
 
     def handle(self, *args, **options):
-        self.stdout.write("Waiting for database...")
-        db_conn = None
-        while not db_conn:
-            try:
-                db_conn = connections["default"]
-            except OperationalError:
-                self.stdout.write("Database unavailable, waiting 1 second...")
-                time.sleep(1)
+        self.stdout.write("Waiting for databases...")
+        for db in ["default", "dev"]:
+            db_conn = None
+            while not db_conn:
+                try:
+                    db_conn = connections[db]
+                except OperationalError:
+                    self.stdout.write("Database unavailable, waiting 1 second...")
+                    time.sleep(1)
 
-        self.stdout.write(self.style.SUCCESS("Database available!"))
+            self.stdout.write(self.style.SUCCESS(f"Database '{db}' available!"))
 
-        # Check if the database exists, and create it if it does not
-        self.create_database_if_not_exists()
+            # Check if the database exists, and create it if it does not
+            self.create_database_if_not_exists(db)
 
-    def create_database_if_not_exists(self):
-        db_name = settings.DATABASES["default"]["NAME"]
-        db_user = settings.DATABASES["default"]["USER"]
-        db_password = settings.DATABASES["default"]["PASSWORD"]
-        db_host = settings.DATABASES["default"]["HOST"]
-        db_port = settings.DATABASES["default"]["PORT"]
+    def create_database_if_not_exists(self, db):
+        db_name = settings.DATABASES[db]["NAME"]
+        db_user = settings.DATABASES[db]["USER"]
+        db_password = settings.DATABASES[db]["PASSWORD"]
+        db_host = settings.DATABASES[db]["HOST"]
+        db_port = settings.DATABASES[db]["PORT"]
 
         conn = psycopg2.connect(
             dbname="postgres",

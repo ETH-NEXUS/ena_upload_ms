@@ -4,15 +4,18 @@ from os import listdir
 from os.path import isdir, isfile, join
 
 import yaml
+from constance import config
 from django.conf import settings
 from django.db.models import Count, Q
 from django.utils import timezone as tz
 from django.utils.translation import gettext_lazy as _
 from ena_upload import ena_upload as ena
+from ena_upload_ms.dynamic_settings import dynamic_settings
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .ena_helpers import SCHEMAS, apply_template, webin_validate
 from .filters import JobFilterSet
@@ -284,3 +287,29 @@ class AnalysisFileViewset(
             return file
         else:
             raise ValidationError(f"File {file.file_name} does not exist.")
+
+
+class ToggleDev(APIView):
+    def get(self, request, *args, **kwargs):
+        value = request.query_params.get("value")
+
+        if value is not None:
+            if isinstance(value, bool):
+                new_value = value
+            elif isinstance(value, str) and value.lower() in ["true", "false"]:
+                new_value = value.lower() == "true"
+            else:
+                return Response(
+                    {"error": "Invalid 'value' parameter. Must be 'true' or 'false'"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            setattr(config, "ENA_USE_DEV_ENDPOINT", new_value)
+
+        return Response(
+            {
+                "ENA_USE_DEV_ENDPOINT": config.ENA_USE_DEV_ENDPOINT,
+                "ENA_ENDPOINT": dynamic_settings.ENA_ENDPOINT(),
+                "ENA_DB": Job.objects.db,
+            }
+        )

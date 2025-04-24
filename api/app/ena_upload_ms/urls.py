@@ -14,19 +14,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-import re
-from django.views.static import serve
-from django.contrib import admin
-from django.urls import path, re_path, include
-from django.conf import settings
-from drf_auto_endpoint.router import router
 
-from rest_framework.authtoken import views as authtoken_views
+import re
+
+from core.views import ToggleDev
+from django.conf import settings
+from django.contrib import admin
+from django.urls import include, path, re_path
+from django.views.static import serve
+from drf_auto_endpoint.router import router
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from rest_framework.authtoken import views as authtoken_views
 
 urlpatterns = []
 
@@ -38,7 +40,11 @@ urlpatterns = [
     path(f"{prefix}admin/", admin.site.urls),
     path(f"{prefix}api/", include(router.urls)),
     path(f"{prefix}api/token/", authtoken_views.obtain_auth_token),
-    path(f"{prefix}api/doc/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        f"{prefix}api/doc/",
+        SpectacularAPIView.as_view(),
+        name="schema",
+    ),
     path(
         f"{prefix}api/doc/swagger/",
         SpectacularSwaggerView.as_view(url_name="schema"),
@@ -48,6 +54,11 @@ urlpatterns = [
         f"{prefix}api/doc/redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
+    ),
+    path(
+        f"{prefix}api/dev/",
+        ToggleDev.as_view(),
+        name="dev",
     ),
 ]
 
