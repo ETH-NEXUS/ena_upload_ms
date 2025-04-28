@@ -1,0 +1,30 @@
+{% extends "rest_framework/base.html" %} {% block content %} {{ block.super }}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/ena/api/dev/", true); // true = async
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          const apiData = JSON.parse(xhr.responseText);
+          if (apiData.ENA_USE_DEV_ENDPOINT === false) {
+            document.querySelector(
+              ".navbar > .container"
+            ).style.backgroundColor = "red";
+            elt = document.querySelector(".navbar-brand");
+            elt.style.color = "black";
+            elt.innerHTML += " <strong> ⚠️ PRODUCTION ⚠️ </strong>";
+          }
+        } else {
+          console.error("XHR error:", xhr.statusText);
+        }
+      }
+    };
+
+    xhr.send();
+  });
+</script>
+
+{% endblock %}
