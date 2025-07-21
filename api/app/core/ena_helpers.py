@@ -2,7 +2,7 @@ import json
 import re
 import tempfile
 from datetime import datetime as dt
-from os.path import abspath, basename, dirname, isfile, join, splitext
+from os.path import abspath, basename, isfile, join, splitext
 
 import pandas as pd
 import yaml
@@ -216,8 +216,9 @@ def ena_upload(job: Job):
         if "sample" in schema_targets:
             schema_targets["sample"] = handle_sample(job, schema_targets["sample"])
 
-    base_path = abspath(dirname(ena.__file__))
-    template_path = join(base_path, "templates")
+    # base_path = abspath(dirname(ena.__file__))
+    # template_path = join(base_path, "templates")
+    template_path = "/ena_templates"
 
     center = job.data.get("center_name")
     log.debug(f"Using center {center}")

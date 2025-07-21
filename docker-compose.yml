@@ -10,6 +10,7 @@ services:
     volumes:
       - ./api/app:/app
       - ./templates:/templates
+      - ./ena_templates:/ena_templates
       - ./data:/data
     env_file: .env
     environment:

@@ -1,7 +1,7 @@
 # this is needen because ena-upload is depending on the PyYAML>5.* 
 # but version 5.4.1 cannot be installed because of a malicious setup.cfg
-PyYAML==5.3.1
-ena-upload-cli==0.7.4
+PyYAML==6.0.2
+ena-upload-cli==0.9.0
 click==8.1.7
 python-box==7.1.1
 rich==13.7.0

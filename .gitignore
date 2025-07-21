@@ -169,5 +169,5 @@ cython_debug/
 /ena_upload_ng
 /templates/**
 !/templates/default.yml.TEMPLATE
-/ena_templates
+# /ena_templates
 .secrets
