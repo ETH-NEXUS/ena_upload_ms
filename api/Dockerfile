@@ -36,6 +36,7 @@ ENV GIT_LASTCOMMITDATE=${GIT_LASTCOMMITDATE}
 
 # Copy the app to the image
 COPY ./app /app
+COPY ./ena_templates /ena_templates
 
 # Set working directory
 WORKDIR /app
