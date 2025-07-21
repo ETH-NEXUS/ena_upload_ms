@@ -10,7 +10,9 @@ from .helpers import merge
 
 class Job(models.Model):
     created_at = models.DateTimeField(auto_now=True)
-    owner = models.ForeignKey(to=get_user_model(), null=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(
+        to=get_user_model(), null=True, on_delete=models.DO_NOTHING, db_constraint=False
+    )
     status = models.CharField(
         max_length=20,
         choices=(
@@ -142,7 +144,9 @@ class File(models.Model):
 
 class AnalysisJob(models.Model):
     created_at = models.DateTimeField(auto_now=True)
-    owner = models.ForeignKey(to=get_user_model(), null=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(
+        to=get_user_model(), null=True, on_delete=models.DO_NOTHING, db_constraint=False
+    )
     job = models.ForeignKey(
         to=Job, null=False, on_delete=models.CASCADE, related_name="jobs"
     )

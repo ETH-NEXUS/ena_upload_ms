@@ -7,7 +7,7 @@ python manage.py collectstatic --noinput
 python manage.py wait_for_db
 python manage.py makemigrations
 python manage.py migrate
-python manage.py migrate --database=dev
+python manage.py migrate --database dev
 python manage.py initadmin
 python manage.py initusertoken
 python manage.py db init
