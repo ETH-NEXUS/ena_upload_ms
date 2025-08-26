@@ -1,0 +1,25 @@
+volumes:
+  smnrp_data:
+services:
+  ws:
+    image: ethnexus/smnrp:2.6.2
+    volumes:
+      - smnrp_data:/etc/letsencrypt
+    ports:
+      - 80:80
+      - 443:443
+    env_file: .env
+    restart: unless-stopped
+    depends_on:
+      - api
+  api:
+    environment:
+      - DJANGO_DEBUG=True
+      - DJANGO_LOG_LEVEL=DEBUG
+    ports:
+      - "5042:5000"
+  db:
+    ports:
+      - "54342:5432"
+    volumes:
+      - ./dumps:/dumps
