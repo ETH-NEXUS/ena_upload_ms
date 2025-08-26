@@ -149,11 +149,15 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+###
+# Proxy support
+###
+ENA_PROXY_PREFIX = environ.get("ENA_PROXY_PREFIX", "")
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = f"{ENA_PROXY_PREFIX}static/"
 STATIC_ROOT = "/vol/web/static"
 
 # Default primary key field type
@@ -223,8 +227,10 @@ SESSION_COOKIE_SAMESITE = "Strict"
 SESSION_COOKIE_AGE = 1209600  # (1209600) default: 2 weeks in seconds
 
 # PROD ONLY
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 ###
 # LOGGING
@@ -293,11 +299,6 @@ TEMPLATE_DIR = "/templates"
 DATA_DIR = "/data"
 ENA_SUBMISSION_TOOL = "ena_upload_ms"
 ENA_SUBMISSION_TOOL_VERSION = environ.get("GIT_VERSION", "v0.99.0")
-
-###
-# Proxy support
-###
-ENA_PROXY_PREFIX = environ.get("ENA_PROXY_PREFIX", "")
 
 ###
 # Dynamic settings
