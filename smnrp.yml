@@ -1,0 +1,12 @@
+domains:
+  localhost:
+    disable_https: true
+    upstreams:
+      api:
+        - api:5000
+    locations:
+      - proxy:
+          uri: /ena/
+          proto: http
+          upstream: api
+          path: /ena/

@@ -1,10 +1,16 @@
+configs:
+  smnrp:
+    file: ./smnrp.yml
 volumes:
   smnrp_data:
 services:
   ws:
-    image: ethnexus/smnrp:2.6.2
+    image: ethnexus/smnrpx:1.0.5
     volumes:
       - smnrp_data:/etc/letsencrypt
+    configs:
+      - source: smnrp
+        target: /run/configs/smnrp.yml
     ports:
       - 80:80
       - 443:443
