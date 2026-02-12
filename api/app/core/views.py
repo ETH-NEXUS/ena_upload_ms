@@ -1,7 +1,7 @@
 import re
 from datetime import datetime as dt
 from os import listdir
-from os.path import isdir, isfile, join
+from os.path import basename, isdir, isfile, join
 
 import yaml
 from constance import config
@@ -145,6 +145,10 @@ class JobViewset(
                 if schema not in data and schema in new_job.data:
                     del new_job.data[schema]
             new_job.data = merge(new_job.data, data)
+            if "files" in request.data and request.data["files"] != []:
+                # TODO: check if basenames of files are the same
+                # otherwise ena will not accept it
+                new_job.files = request.data["files"]
         new_job.save()
         result = JobSerializer(new_job, context={"request": request})
         return Response(result.data)
