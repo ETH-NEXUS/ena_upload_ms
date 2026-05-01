@@ -50,9 +50,11 @@ class JobViewset(
     serializer_class = JobSerializer
     filterset_class = JobFilterSet
 
-    def perform_create(self, serializer: JobSerializer):
+    def perform_create(self, serializer: JobSerializer, modify: bool = False):
         job = serializer.save(owner=self.request.user)
         apply_template(job)
+        if modify:
+            job.action = "MODIFY"
         job.save()
         return job
 
@@ -60,13 +62,13 @@ class JobViewset(
     # SPECIAL ACTIONS TO ONLY SUBMIT SINGLE OBJECTS
     ###
 
-    def __perform_create_with_ignore(self, request, ignore: list):
+    def __perform_create_with_ignore(self, request, ignore: list, modify: bool = False):
         data = request.data
         data["ignore"] = ignore
         serializer = JobSerializer(data=data, context={"request": request})
         if serializer.is_valid():
             result = JobSerializer(
-                self.perform_create(serializer), context={"request": request}
+                self.perform_create(serializer, modify=modify), context={"request": request}
             )
             return Response(result.data)
         else:
@@ -76,6 +78,12 @@ class JobViewset(
     def study(self, request):
         return self.__perform_create_with_ignore(
             request, ["sample", "experiment", "run"]
+        )
+    
+    @action(detail=False, methods=['post'], url_path='study/modify')
+    def study_modify(self, request):
+        return self.__perform_create_with_ignore(
+            request, ["sample", "experiment", "run"], modify = True
         )
 
     @action(detail=False, methods=["post"])

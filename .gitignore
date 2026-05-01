@@ -171,3 +171,4 @@ cython_debug/
 !/templates/default.yml.TEMPLATE
 /backup
 .secrets
+/scripts/*.xml

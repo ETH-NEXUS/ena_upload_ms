@@ -15,11 +15,13 @@ class JobFilterSet(filters.FilterSet):
     files = filters.CharFilter(lookup_expr="icontains")
 
     # Accession filters
+    study = filters.CharFilter(label="Study", method=accession_filter)
     sample = filters.CharFilter(label="Sample", method=accession_filter)
     experiment = filters.CharFilter(label="Experiment", method=accession_filter)
     run = filters.CharFilter(label="Run", method=accession_filter)
 
     # Alias filters
+    study__alias = filters.CharFilter(label="Study alias", method=alias_filter)
     sample__alias = filters.CharFilter(label="Sample alias", method=alias_filter)
     experiment__alias = filters.CharFilter(
         label="Experiment alias", method=alias_filter
@@ -40,9 +42,11 @@ class JobFilterSet(filters.FilterSet):
             "status",
             "action",
             "template",
+            "study",
             "sample",
             "experiment",
             "run",
+            "study__alias",
             "sample__alias",
             "experiment__alias",
             "run__alias",
