@@ -181,7 +181,7 @@ class AnalysisJob(models.Model):
                         )
                 if "experiment" in consolidated_job_result:
                     manifest_text = (
-                        f"STUDY {consolidated_job_result['experiment']['study_alias']}\n"
+                        f"STUDY {self.data['study'] if self.data is not None and 'study' in self.data else consolidated_job_result['experiment']['study_alias']}\n"
                         f"SAMPLE {consolidated_job_result['experiment']['sample_alias']}\n"
                     )
                 if "run" in consolidated_job_result:
