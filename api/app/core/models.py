@@ -1,4 +1,5 @@
 from copy import copy
+from traceback import print_exc
 
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
@@ -171,6 +172,7 @@ class AnalysisJob(models.Model):
     def manifest(self):
         try:
             manifest_text = ""
+            manifest_data = {}
             if self.job.result:
                 # Merge different results from different child jobs
                 consolidated_job_result = self.job.result
@@ -180,20 +182,20 @@ class AnalysisJob(models.Model):
                             consolidated_job_result, child.result
                         )
                 if "experiment" in consolidated_job_result:
-                    manifest_text = (
-                        f"STUDY {self.data['study'] if self.data is not None and 'study' in self.data else consolidated_job_result['experiment']['study_alias']}\n"
-                        f"SAMPLE {consolidated_job_result['experiment']['sample_alias']}\n"
-                    )
+                    manifest_data["STUDY"] = consolidated_job_result['experiment']['study_alias']
+                    manifest_data["SAMPLE"] = consolidated_job_result['experiment']['sample_alias']
                 if "run" in consolidated_job_result:
-                    manifest_text += (
-                        f"RUN_REF {consolidated_job_result['run']['accession']}\n"
-                    )
-
-                for key, value in self.data.items():
+                    manifest_data["RUN_REF"] = consolidated_job_result['run']['accession']
+                
+                data_upper_with_keys = {k.upper(): v for k, v in self.data.items()}
+                manifest_data = merge(manifest_data, data_upper_with_keys)
+                print(manifest_data)
+                for key, value in manifest_data.items():
                     manifest_text += f"{key.upper()} {value}\n"
                 for file in self.analysisjob_files.all():
                     manifest_text += f"{file.file_type} {file.file_name}\n"
         except Exception as ex:
+            print_exc(ex)
             return f"ERROR generating manifest: {ex}"
         return manifest_text
 
