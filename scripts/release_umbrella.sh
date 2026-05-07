@@ -4,7 +4,7 @@ set -euo pipefail
 WEBIN_USER="${WEBIN_USER:-Username}"
 WEBIN_PASS="${WEBIN_PASS:-Password}"
 
-PRJ="PRJEB112381"
+PRJ="PRJEB112609"
 
 # Use test first; switch to production after validation:
 ENA_URL="${ENA_URL:-https://wwwdev.ebi.ac.uk/ena/submit/drop-box/submit/}"
